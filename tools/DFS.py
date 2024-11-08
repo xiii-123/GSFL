@@ -135,5 +135,5 @@ def retrieve(address: str, path) -> bool:
         return False
 
 if __name__ == '__main__':
-    # key = store('./test.txt')
-    retrieve('6fafb94276516b2b83709a810487f90f81880be691c7d85b05f72f2e8520b816', './test.txt')
+    key = store('test.txt')
+    # retrieve('6fafb94276516b2b83709a810487f90f81880be691c7d85b05f72f2e8520b816', 'test.txt')

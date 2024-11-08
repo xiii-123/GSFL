@@ -3,10 +3,10 @@ import sys
 root_path = os.path.abspath(__file__)
 root_path = '/'.join(root_path.split('/')[:-2])
 sys.path.append(root_path)
-from tools import CONTRACT_ABI, CONTRACT_ADDRESS, SEPOLIA_ADDRESS, serializeGSK, serializeGPK
+from tools import CONTRACT_ABI, CONTRACT_ADDRESS, WEB3_HTTPProvider, serializeGSK, serializeGPK, PRIVATE_KEY
 from web3 import Web3, HTTPProvider
 from tools.DFS import store
-from tools import SymEncrypt, AsyEncrypt, gas_price
+from tools import SymEncrypt, AsyEncrypt, GAS_PRICE
 from charm.schemes.grpsig.groupsig_bgls04 import ShortSig
 from charm.toolbox.pairinggroup import PairingGroup
 import threading
@@ -20,9 +20,9 @@ class oracle:
 
     def __init__(self, total = 100) -> None:
         # 以太坊合约对象
-        self.w3 = Web3(Web3.HTTPProvider(SEPOLIA_ADDRESS)) 
+        self.w3 = Web3(Web3.HTTPProvider(WEB3_HTTPProvider)) 
         self.contract = self.w3.eth.contract(address = CONTRACT_ADDRESS, abi = CONTRACT_ABI)
-        self.private_key = ""
+        self.private_key = PRIVATE_KEY
         self.group = PairingGroup('MNT224')
         self.count = 0
         self.total = total
@@ -89,7 +89,7 @@ class oracle:
         txn_data1 = self.contract.functions.returnGsk(message, pubKey, serializeGPK(self.group, self.gpk)).build_transaction({
             'from': "0xD842076A53CFE48DeE2F63Fab5BFEd66cBE4CBe0",
             'gas': 2000000,  # 根据情况调整 gas 限制
-            'gasPrice': self.w3.to_wei(gas_price, 'gwei'),
+            'gasPrice': self.w3.to_wei(GAS_PRICE, 'gwei'),
             'nonce': nonce,
         })
 
@@ -109,7 +109,7 @@ class oracle:
         txn_data1 = self.contract.functions.returnGpk(pubKey, serializeGPK(self.group, self.gpk)).build_transaction({
             'from': "0xD842076A53CFE48DeE2F63Fab5BFEd66cBE4CBe0",
             'gas': 2000000,  # 根据情况调整 gas 限制
-            'gasPrice': self.w3.to_wei(gas_price, 'gwei'),
+            'gasPrice': self.w3.to_wei(GAS_PRICE, 'gwei'),
             'nonce': nonce,
         })
 

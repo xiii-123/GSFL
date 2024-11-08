@@ -5,9 +5,9 @@ root_path = os.path.abspath(__file__)
 root_path = '/'.join(root_path.split('/')[:-2])
 sys.path.append(root_path)
 from tools import getAsyKeys, AsyDecrypt, AsyEncrypt, deserializeSig, deserializeGPK
-from tools import SymEncrypt, SymDecrypt, gas_price
+from tools import SymEncrypt, SymDecrypt, GAS_PRICE
 from tools.DFS import store, retrieve
-from tools import CONTRACT_ABI, CONTRACT_ADDRESS, SEPOLIA_ADDRESS
+from tools import CONTRACT_ABI, CONTRACT_ADDRESS, WEB3_HTTPProvider, PRIVATE_KEY
 from web3 import Web3, HTTPProvider
 from charm.schemes.grpsig.groupsig_bgls04 import ShortSig
 from charm.toolbox.pairinggroup import PairingGroup
@@ -30,10 +30,10 @@ class server:
         self.secKey, self.pubKey = getAsyKeys()
 
         # 以太坊私钥,用于发交易
-        self.private_key = ""
+        self.private_key = PRIVATE_KEY
 
         # 以太坊合约对象
-        self.w3 = Web3(Web3.HTTPProvider(SEPOLIA_ADDRESS)) 
+        self.w3 = Web3(Web3.HTTPProvider(WEB3_HTTPProvider)) 
         self.contract = self.w3.eth.contract(address = CONTRACT_ADDRESS, abi = CONTRACT_ABI)
 
         # 群签名对象
@@ -48,7 +48,7 @@ class server:
         txn_data1 = self.contract.functions.createServer(self.pubKey, self.name, self.descripton).build_transaction({
             'from': "0xD842076A53CFE48DeE2F63Fab5BFEd66cBE4CBe0",
             'gas': 2000000,  # 根据情况调整 gas 限制
-            'gasPrice': self.w3.to_wei(gas_price, 'gwei'),
+            'gasPrice': self.w3.to_wei(GAS_PRICE, 'gwei'),
             'nonce': nonce,
         })
 
@@ -65,7 +65,7 @@ class server:
         txn_data1 = self.contract.functions.createGroup(name, descripton).build_transaction({
             'from': "0xD842076A53CFE48DeE2F63Fab5BFEd66cBE4CBe0",
             'gas': 2000000,  # 根据情况调整 gas 限制
-            'gasPrice': self.w3.to_wei(gas_price, 'gwei'),
+            'gasPrice': self.w3.to_wei(GAS_PRICE, 'gwei'),
             'nonce': nonce,
         })
 
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     print('server init')
     s = server('server1', 'this is server1','./paramDir')
 
-    w3 = Web3(Web3.HTTPProvider(SEPOLIA_ADDRESS)) 
+    w3 = Web3(Web3.HTTPProvider(WEB3_HTTPProvider)) 
     nonce = w3.eth.get_transaction_count("0xD842076A53CFE48DeE2F63Fab5BFEd66cBE4CBe0")
 
     print('server register')
