@@ -14,7 +14,7 @@ GSFL: A Federated Learning Approach based on Group Signatures and Smart Contract
 
 2. Download and configure the [Charm](https://github.com/JHUISI/charm.git) library
 
-3. Configure WEB3_HTTPProvider, GAS_PRICE and Sepolia PRIVATE_KEY in the /tools/\__init__.py file
+3. Configure `WEB3_HTTPProvider`, `GAS_PRICE` and Sepolia `PRIVATE_KEY` in the `/tools/__init__.py` file
 
 4. Run oracle.py
 
